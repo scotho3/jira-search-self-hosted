@@ -5,11 +5,14 @@ import { ErrorText } from "./exception";
 export type ResultItem = List.Item.Props & {
   url: string;
   linkText?: string;
+  issueNumber?: string;
 };
 type SearchFunction = (query: string) => Promise<ResultItem[]>;
 
 const markdownLink = (item: ResultItem) => `[${item.linkText ?? item.title}](${item.url})`;
 const htmlLink = (item: ResultItem) => `<a href="${item.url}">${item.linkText ?? item.title}</a>`;
+// only get the ticket number from the title - ticket number is enclosed in brackets
+const issueNumber = (item: ResultItem) => `${item.issueNumber}`
 
 export function SearchCommand(search: SearchFunction, searchBarPlaceholder?: string) {
   const [query, setQuery] = useState("");
@@ -50,6 +53,9 @@ export function SearchCommand(search: SearchFunction, searchBarPlaceholder?: str
           <ActionPanel.Section title="Link">
             <Action.CopyToClipboard content={markdownLink(item)} title="Copy Markdown Link" />
             <Action.CopyToClipboard content={htmlLink(item)} title="Copy HTML Link" />
+          </ActionPanel.Section>
+          <ActionPanel.Section title="Ticket">
+            <Action.CopyToClipboard content={issueNumber(item)} title="Copy Ticket Number" />
           </ActionPanel.Section>
         </ActionPanel>
       }
